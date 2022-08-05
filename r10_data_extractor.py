@@ -26,5 +26,12 @@ summaryFrame = pd.DataFrame(simdata['summary'].tolist()).reset_index()
 
 t = pd.merge(summaryFrame, shotFrame)
 t = pd.merge(t, bag, left_on='clubId', right_on='id')
+
+# We change the output for ballspeed and clubheadspeed to miles per hour instead of meter per second
+t['ballSpeed'] = t['ballSpeed'].apply(lambda x: x * 3600 / 1609)
+t['clubHeadSpeed'] = t['clubHeadSpeed'].apply(lambda x: x * 3600 / 1609)
+# We add a column for tempo based on backSwingTime and DownSwingTime
+# A bit sceptical to the backSwingTime data, not sure how the R10 reads this
+t['tempo'] = t['backSwingTime'] / t['downSwingTime']
 t.to_csv(output)
 print('You should now have a file called output_converted_data.csv in this directory.')
